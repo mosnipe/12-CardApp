@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- アイコンの背景色（適応型アイコン用） -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>
+

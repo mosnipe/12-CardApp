@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BizCard Note</string>
+    <string name="register_card">名刺を登録する</string>
+    <string name="view_cards">名刺一覧を見る</string>
+    <string name="take_photo">撮影</string>
+    <string name="retake">撮り直し</string>
+    <string name="next">次へ</string>
+    <string name="save">保存</string>
+    <string name="name">名前</string>
+    <string name="company">会社名</string>
+    <string name="email">メールアドレス</string>
+    <string name="phone">電話番号</string>
+    <string name="memo">メモ</string>
+    <string name="meeting_place">会った場所</string>
+    <string name="meeting_date">会った日</string>
+    <string name="face_photo">顔写真</string>
+    <string name="card_image">名刺画像</string>
+    <string name="registration_date">登録日</string>
+    <string name="camera_permission_required">カメラの権限が必要です</string>
+    <string name="error_occurred">エラーが発生しました</string>
+    <string name="save_success">保存しました</string>
+    <string name="save_failed">保存に失敗しました</string>
+    <string name="loading">読み込み中...</string>
+</resources>
+
