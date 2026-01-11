@@ -80,14 +80,6 @@ fun CardListScreen(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
-                            if (card.registrationDate != null) {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = "登録日: ${card.registrationDate}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
                         }
                     }
                 }
