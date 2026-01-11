@@ -50,6 +50,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    
+    // Javaコンパイルを無効化（Kotlinのみを使用）
+    tasks.withType<JavaCompile> {
+        enabled = false
+    }
     kotlinOptions {
         jvmTarget = "17"
     }

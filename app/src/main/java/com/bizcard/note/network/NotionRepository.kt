@@ -210,9 +210,9 @@ class NotionRepository(
 
     suspend fun getAllBizCards(): Result<List<BizCard>> {
         return try {
-            // 作成日時（created_time）でソート（降順：新しい順）
+            // 会った日でソート（降順：新しい順）
             val request = QueryDatabaseRequest(
-                sorts = listOf(Sort(property = "created_time", direction = "descending"))
+                sorts = listOf(Sort(property = "会った日", direction = "descending"))
             )
 
             // データベースIDを取得（検証済みのIDがあればそれを使用、なければ元のIDを使用）
@@ -242,11 +242,18 @@ class NotionRepository(
                         id = page.id,
                         name = props["名前"]?.title?.firstOrNull()?.text?.content ?: "",
                         company = props["会社名"]?.rich_text?.firstOrNull()?.text?.content ?: "",
-                        email = props["メー ル"]?.email ?: props["メール"]?.email ?: "",
-                        phone = props["電 話番号"]?.rich_text?.firstOrNull()?.text?.content ?: props["電話番号"]?.rich_text?.firstOrNull()?.text?.content ?: "",
+                        email = props["メール"]?.email ?: "",
+                        phone = props["電話番号"]?.rich_text?.firstOrNull()?.text?.content ?: "",
                         memo = props["メモ"]?.rich_text?.firstOrNull()?.text?.content ?: "",
                         meetingPlace = props["会った場所"]?.rich_text?.firstOrNull()?.text?.content ?: "",
-                        meetingDate = props["会 った日"]?.date?.start?.let { dateFormat.parse(it) } ?: props["会った日"]?.date?.start?.let { dateFormat.parse(it) },
+                        meetingDate = props["会った日"]?.date?.start?.let { 
+                            try {
+                                dateFormat.parse(it)
+                            } catch (e: Exception) {
+                                Log.w("NotionRepository", "Failed to parse date: $it", e)
+                                null
+                            }
+                        },
                         cardImageUri = props["名刺画像"]?.files?.firstOrNull()?.external?.url
                             ?: props["名刺画像"]?.files?.firstOrNull()?.file?.url,
                         facePhotoUri = props["顔写真"]?.files?.firstOrNull()?.external?.url
@@ -255,14 +262,34 @@ class NotionRepository(
                             try {
                                 dateTimeFormat.parse(it)
                             } catch (e: Exception) {
+                                Log.w("NotionRepository", "Failed to parse created_time: $it", e)
                                 null
                             }
                         }
                     )
                 }
+                Log.d("NotionRepository", "Successfully loaded ${cards.size} cards")
                 Result.success(cards)
             } else {
-                Result.failure(Exception("Failed to fetch: ${response.message()}"))
+                // エラーレスポンスの詳細を取得
+                val errorBodyString = try {
+                    val errorBody = response.errorBody()
+                    if (errorBody != null) {
+                        val source = errorBody.source()
+                        source.request(java.lang.Long.MAX_VALUE)
+                        val errorBodyString = source.buffer().clone().readUtf8()
+                        source.close()
+                        errorBodyString
+                    } else {
+                        "No error body"
+                    }
+                } catch (e: Exception) {
+                    "Error reading error body: ${e.message}"
+                }
+                
+                val errorMessage = "Failed to fetch cards (${response.code()}): $errorBodyString"
+                Log.e("NotionRepository", errorMessage)
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Result.failure(e)
